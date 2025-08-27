@@ -4,7 +4,7 @@ import React from 'react'
 
 function CreatePost() {
   return (
-    <section className="mx-auto space-y-4 w-[98%] md:w-[80%] max-sm:last:mb-14 pb-20">
+    <section className="mx-auto space-y-4 w-[98%] md:w-[80%] lg:w-[60%] max-sm:last:mb-14 pb-20">
       <div className="mb-6 flex gap-1 items-center">
         <Image
           src="/assets/icons/create.svg"

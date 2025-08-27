@@ -1,18 +1,18 @@
 type Post = {
+  ownerId: string,
   title: string,
   imageUrl: string,
-  imageFilePath?: File | Blob,
-  userId: string,
-  postId?: string,
+  imageId: string,
   location: string,
-  tags: string,
+  tags: string[],
   likes: string[],
+  comments: Comment[]
   saves: string[],
-  comments: IComment[]
 }
 
-type IComment = {
+type Comment = {
   userId: string,
-  text: string
+  text: string,
+  createdAt: number
 }
 

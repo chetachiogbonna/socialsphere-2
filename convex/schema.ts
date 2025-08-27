@@ -8,7 +8,7 @@ export default defineSchema({
     last_name: v.string(),
     username: v.string(),
     email: v.string(),
-    created_at: v.number(),
+    profile_pic: v.string(),
   }),
   posts: defineTable({
     ownerId: v.id("users"),

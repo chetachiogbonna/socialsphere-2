@@ -120,6 +120,10 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+::-webkit-scrollbar {
+  width: 0;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -138,4 +142,5 @@
   .link:hover .change-icon-color {
     filter: invert(1) sepia(1) saturate(1) hue-rotate(200deg);
   }
+
 }

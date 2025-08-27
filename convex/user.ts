@@ -8,7 +8,7 @@ export const createUser = mutation({
     last_name: v.string(),
     username: v.string(),
     email: v.string(),
-    created_at: v.number()
+    profile_pic: v.string()
   },
   handler: async (ctx, args) => {
     const taskId = await ctx.db.insert("users", {
@@ -17,7 +17,7 @@ export const createUser = mutation({
       last_name: args.last_name,
       username: args.username,
       email: args.email,
-      created_at: args.created_at
+      profile_pic: args.profile_pic
     });
     // do something with `taskId`
   },

@@ -9,8 +9,6 @@ export async function POST(req: NextRequest) {
   try {
     const evt = await verifyWebhook(req)
 
-    console.log('Received webhook data:', evt.data);
-
     if (evt.type === "user.created") {
       await convex.mutation(api.user.createUser, {
         clerk_userId: evt.data.id!,
@@ -18,7 +16,7 @@ export async function POST(req: NextRequest) {
         last_name: evt.data.last_name!,
         username: evt.data.username!,
         email: evt.data.email_addresses[0].email_address,
-        created_at: evt.data.created_at
+        profile_pic: evt.data.image_url
       });
 
       return NextResponse.json({ status: "success" }, { status: 200 });

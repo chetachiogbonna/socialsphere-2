@@ -4,6 +4,7 @@ import { Control } from 'react-hook-form'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form'
 import { Textarea } from './ui/textarea'
 import { Input } from './ui/input'
+import UploadFile from './UploadFile';
 
 type CustomFormFieldProps = {
   control: Control<{ title: string; location: string; tags: string; }>,
@@ -89,21 +90,7 @@ function CustomFormField({ control, label }: CustomFormFieldProps) {
     //     />
     //   );
     case "Image":
-      return (
-        <FormField
-          control={control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{label}</FormLabel>
-              <FormControl>
-                <div className="w-full h-[350px] bg-yellow-500" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      )
+      return <UploadFile />
   }
 }
 

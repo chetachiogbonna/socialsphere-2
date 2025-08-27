@@ -1,19 +1,17 @@
 "use client";
 
-import { SignInButton, UserButton } from '@clerk/nextjs';
-import { Authenticated, Unauthenticated } from 'convex/react';
-import React from 'react'
+import { useQuery } from 'convex/react';
+import { api } from '../../../../convex/_generated/api';
+import PostCard from '@/components/PostCard';
 
 export default function Home() {
+  const posts = useQuery(api.post.getAllPosts)
+
   return (
-    <div className='ml-[400px]'>
-      <Authenticated>
-        <UserButton />
-        <div>Home page</div>
-      </Authenticated>
-      <Unauthenticated>
-        <SignInButton />
-      </Unauthenticated>
-    </div>
+    <section className="flex justify-center items-center pb-20">
+      <div className="flex flex-col gap-10">
+        {posts?.map((post, index) => <PostCard key={index} post={post} />)}
+      </div>
+    </section>
   );
 }
