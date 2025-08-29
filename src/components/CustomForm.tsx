@@ -13,10 +13,8 @@ import { useMutation } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import { uploadImage } from '@/lib/utils';
 import { Id } from '../../convex/_generated/dataModel';
-import { useUser } from '@clerk/nextjs';
 
 function CustomForm({ post }: { post?: Post }) {
-  // const { user } = useUser()
   const { imageUrl, imageFile } = useImageStore();
   const [showImageError, setShowImageError] = useState(false);
 
@@ -58,7 +56,7 @@ function CustomForm({ post }: { post?: Post }) {
       // Handle form submission logic here
       console.log("Form submitted with values:", values);
     } catch (error) {
-
+      console.error("Error submitting form:", error);
     } finally {
       setIsSubmitting(false)
     }

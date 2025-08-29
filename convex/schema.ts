@@ -9,7 +9,7 @@ export default defineSchema({
     username: v.string(),
     email: v.string(),
     profile_pic: v.string(),
-  }),
+  }).index("byClerkId", ["clerk_userId"]),
   posts: defineTable({
     ownerId: v.id("users"),
     title: v.string(),

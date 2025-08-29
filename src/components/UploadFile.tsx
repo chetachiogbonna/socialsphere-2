@@ -4,7 +4,6 @@ import useImageStore from '@/stores/useImageStore';
 import Image from 'next/image';
 import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { set } from 'zod';
 
 function UploadFile() {
   const { imageUrl, setImageUrl, setImageFile } = useImageStore();
@@ -12,7 +11,7 @@ function UploadFile() {
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setImageUrl(URL.createObjectURL(acceptedFiles[0]));
     setImageFile(acceptedFiles[0]);
-  }, [])
+  }, [setImageFile, setImageUrl]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 

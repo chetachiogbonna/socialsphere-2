@@ -1,9 +1,7 @@
 import { verifyWebhook } from '@clerk/nextjs/webhooks'
 import { NextRequest, NextResponse } from 'next/server'
 import { api } from '../../../../../convex/_generated/api';
-import { ConvexHttpClient } from "convex/browser";
-
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+import { convex } from '@/config/convex';
 
 export async function POST(req: NextRequest) {
   try {
@@ -22,11 +20,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ status: "success" }, { status: 200 });
     }
 
-    // if (evt.type === "user.deleted") {
-    //   await convex.mutation(api.user.deleteUser, {
-    //     clerk_userId: evt.data.id!
-    //   })
-    // }
+    if (evt.type === "user.deleted") {
+      await convex.mutation(api.user.deleteUser, {
+        clerk_userId: evt.data.id!
+      });
+
+      return NextResponse.json({ status: "success" }, { status: 200 });
+    }
 
     // if (evt.type === "user.updated") {
     //   await convex.mutation(api.user.updateUser, {

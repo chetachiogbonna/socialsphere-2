@@ -1,11 +1,9 @@
-"use client";
-
-import { useQuery } from 'convex/react';
 import { api } from '../../../../convex/_generated/api';
 import PostCard from '@/components/PostCard';
+import { convex } from '@/config/convex';
 
-export default function Home() {
-  const posts = useQuery(api.post.getAllPosts)
+export default async function Home() {
+  const posts = await convex.query(api.post.getAllPosts)
 
   return (
     <section className="flex justify-center items-center pb-20">

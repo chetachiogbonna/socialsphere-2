@@ -11,7 +11,7 @@ export const createUser = mutation({
     profile_pic: v.string()
   },
   handler: async (ctx, args) => {
-    const taskId = await ctx.db.insert("users", {
+    await ctx.db.insert("users", {
       clerk_userId: args.clerk_userId,
       first_name: args.first_name,
       last_name: args.last_name,
@@ -19,6 +19,20 @@ export const createUser = mutation({
       email: args.email,
       profile_pic: args.profile_pic
     });
-    // do something with `taskId`
+  },
+});
+
+export const deleteUser = mutation({
+  args: {
+    clerk_userId: v.string()
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.query("users").withIndex("byClerkId", q => q.eq("clerk_userId", args.clerk_userId)).first().then(user => {
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      return ctx.db.delete(user._id);
+    });
   },
 });
