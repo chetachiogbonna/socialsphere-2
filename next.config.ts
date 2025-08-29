@@ -8,6 +8,12 @@ const nextConfig: NextConfig = {
         hostname: "determined-panda-913.convex.cloud",
         port: "",
         pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "img.clerk.com",
+        port: "",
+        pathname: "/**",
       }
     ]
   }

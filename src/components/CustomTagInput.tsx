@@ -5,25 +5,32 @@ import { Input } from "@/components/ui/input"
 import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-function CustomTagInput({ fieldChange, value }: { fieldChange: () => void, value: string }) {
-  const [inputValue, setInputValue] = useState(value || "")
-  const [tags, setTags] = useState<string[]>([])
+type CustomTagInputProps = {
+  fieldChange: (tags: string[]) => void
+  value: string[]
+}
+
+function CustomTagInput({ fieldChange, value }: CustomTagInputProps) {
+  const [inputValue, setInputValue] = useState("")
+  const [tags, setTags] = useState<string[]>(value || [])
 
   const addTag = () => {
     if (inputValue.trim() && !tags.includes(inputValue.trim())) {
-      setTags([...tags, inputValue.trim()])
+      const newTags = [...tags, inputValue.trim()]
+      setTags(newTags)
+      fieldChange(newTags)
       setInputValue("")
     }
   }
 
   const removeTag = (tag: string) => {
-    setTags(tags.filter((t) => t !== tag))
+    const newTags = tags.filter((t) => t !== tag)
+    setTags(newTags)
+    fieldChange(newTags)
   }
 
   return (
-    <div
-      className="flex items-center gap-2 bg-[#1A1A1A] border-light focus-visible:ring-offset-1 focus:ring-offset-dark-2 text-white rounded-md"
-    >
+    <div className="flex items-center gap-2 bg-[#1A1A1A] border-light text-white rounded-md p-2">
       <div className="flex flex-wrap gap-2">
         {tags.map((tag) => (
           <span
@@ -43,11 +50,7 @@ function CustomTagInput({ fieldChange, value }: { fieldChange: () => void, value
 
       <Input
         value={inputValue}
-        onChange={(e) => {
-          setInputValue(e.target.value)
-          fieldChange()
-          value = [...tags, e.target.value].join(" ")
-        }}
+        onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             e.preventDefault()
@@ -55,7 +58,7 @@ function CustomTagInput({ fieldChange, value }: { fieldChange: () => void, value
           }
         }}
         placeholder="Type something and press Enter"
-        className="flex-1 bg-none border-none focus-visible:ring-0 focus-visible:outline-none"
+        className="flex-1 bg-transparent border-none focus-visible:ring-0 focus-visible:outline-none"
       />
     </div>
   )

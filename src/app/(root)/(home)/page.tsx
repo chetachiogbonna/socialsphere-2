@@ -7,7 +7,7 @@ export default async function Home() {
 
   return (
     <section className="flex justify-center items-center pb-20">
-      <div className="flex flex-col gap-10">
+      <div className="flex flex-col gap-10 w-[500px]">
         {posts?.map((post, index) => <PostCard key={index} post={post} />)}
       </div>
     </section>

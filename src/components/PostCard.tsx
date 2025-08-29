@@ -1,85 +1,85 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+"use client"
+
+import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card"
 import Image from "next/image"
-import { Id } from "../../convex/_generated/dataModel"
 import { Heart, MessageCircle, Bookmark } from "lucide-react"
+import { Id } from "../../convex/_generated/dataModel"
+import { convertToReadableDateString } from "@/lib/utils"
 
 interface Post {
-  _id: Id<"posts">;
-  _creationTime: number;
-  ownerId: Id<"users">;
-  title: string;
-  imageUrl: string;
-  imageId: string;
-  location: string;
-  tags: string[];
-  likes: Id<"users">[];
+  _id: Id<"posts">
+  _creationTime: number
+  ownerId: Id<"users">
+  title: string
+  imageUrl: string
+  imageId: string
+  location: string
+  tags: string[]
+  likes: Id<"users">[]
   comments: {
-    userId: Id<"users">;
-    text: string;
-    createdAt: number;
-  }[];
-  saves: Id<"users">[];
+    userId: Id<"users">
+    text: string
+    createdAt: number
+  }[]
+  saves: Id<"users">[]
+  user?: {
+    username: string
+    profileImage: string
+  }
 }
 
 function PostCard({ post }: { post: Post }) {
   return (
-    <Card className="w-full max-w-lg bg-dark-2 border border-dark-4 rounded-2xl shadow-lg overflow-hidden">
-      {/* Header */}
-      <CardHeader className="flex flex-row items-center justify-between p-4">
-        <CardTitle className="text-lg font-semibold text-gray-100 truncate">
-          {post.title}
-        </CardTitle>
-        <span className="text-xs text-gray-400">{new Date(post._creationTime).toLocaleDateString()}</span>
-      </CardHeader>
-
-      {/* Image */}
-      <CardContent className="p-0">
-        <div className="relative w-full h-80">
+    <Card className="bg-[#0a0a0a] text-white border border-neutral-800">
+      <CardHeader className="flex flex-row items-center gap-3">
+        {post.user?.profileImage && (
           <Image
-            src={post.imageUrl}
-            alt={post.title}
-            fill
-            className="object-cover"
+            src={post.user.profileImage}
+            alt={post.user.username}
+            width={40}
+            height={40}
+            className="rounded-full object-cover"
           />
-        </div>
-      </CardContent>
-
-      {/* Tags */}
-      <CardContent className="px-4 py-2 flex flex-wrap gap-2">
-        {post.tags.map(tag => (
-          <span
-            key={tag}
-            className="px-2 py-1 text-xs bg-dark-4 text-gray-300 rounded-full"
+        )}
+        <div>
+          <p className="font-semibold">{post.user?.username}</p>
+          <p
+            className="text-gray-600 text-xs"
           >
-            #{tag}
-          </span>
-        ))}
+            {convertToReadableDateString(post._creationTime)}
+            <span className="font-bold"> &bull; </span>
+            {post.location}
+          </p>
+        </div>
+
+      </CardHeader>
+      <hr className="border-light w-[98%] mx-auto" />
+
+      <div className="px-4 pb-2">
+        <p className="text-sm">{post.title}</p>
+      </div>
+
+      <CardContent className="px-4">
+        <Image
+          src={post.imageUrl}
+          alt={post.title}
+          width={500}
+          height={500}
+          className="w-full h-auto object-cover rounded-2xl"
+        />
       </CardContent>
 
-      {/* Footer: Likes / Comments / Saves */}
-      <CardFooter className="flex items-center justify-between px-4 py-3 border-t border-dark-4">
-        <div className="flex items-center gap-4 text-gray-300">
-          <button className="flex items-center gap-1 hover:text-pink-500 transition">
-            <Heart className="w-5 h-5" />
-            <span className="text-sm">{post.likes.length}</span>
-          </button>
-          <button className="flex items-center gap-1 hover:text-blue-400 transition">
-            <MessageCircle className="w-5 h-5" />
-            <span className="text-sm">{post.comments.length}</span>
-          </button>
+      <CardFooter className="flex flex-col gap-2 px-4 py-3">
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-4">
+            <Heart className="w-6 h-6 cursor-pointer hover:text-red-500 transition" />
+            <MessageCircle className="w-6 h-6 cursor-pointer hover:text-blue-400 transition" />
+          </div>
+          <Bookmark className="w-6 h-6 cursor-pointer hover:text-yellow-400 transition" />
         </div>
-        <button className="hover:text-yellow-400 transition text-gray-300">
-          <Bookmark className="w-5 h-5" />
-        </button>
       </CardFooter>
     </Card>
   )
 }
 
-export default PostCard
+export default PostCard;

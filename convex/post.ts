@@ -27,6 +27,22 @@ export const createPost = mutation({
 
 export const getAllPosts = query({
   handler: async (ctx) => {
-    return await ctx.db.query("posts").collect();
+    const posts = await ctx.db.query("posts").collect();
+
+    const postsWithUser = await Promise.all(
+      posts.map(async (post) => {
+        const postOwner = await ctx.db.get(post.ownerId);
+
+        return {
+          ...post,
+          user: {
+            username: postOwner?.username!,
+            profileImage: postOwner?.profile_pic!
+          }
+        };
+      })
+    );
+
+    return postsWithUser;
   },
-})
+});

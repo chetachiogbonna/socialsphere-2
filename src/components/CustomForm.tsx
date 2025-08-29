@@ -13,6 +13,7 @@ import { useMutation } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import { uploadImage } from '@/lib/utils';
 import { Id } from '../../convex/_generated/dataModel';
+import CustomTagInput from './CustomTagInput';
 
 function CustomForm({ post }: { post?: Post }) {
   const { imageUrl, imageFile } = useImageStore();
@@ -25,7 +26,7 @@ function CustomForm({ post }: { post?: Post }) {
     defaultValues: {
       title: post?.title || "",
       location: post?.location || "",
-      tags: post?.tags.join("") || "",
+      tags: post?.tags || [],
     },
   });
 
@@ -47,10 +48,9 @@ function CustomForm({ post }: { post?: Post }) {
       const imageId = await uploadImage(url, imageFile!);
       const realImageUrl = await getImageUrl({ storageId: imageId as Id<"_storage"> }) as string;
       await createPost({
-        ownerId: "j570cw4t4w57r520gjndnpe1757nrxjk" as Id<"users">,
+        ownerId: "j57e0rn3d2r1gnr70dmb8eqt597pk1zm" as Id<"users">,
         imageUrl: realImageUrl,
         ...values,
-        tags: values.tags.split(",").map(tag => tag.trim()),
         imageId,
       });
       // Handle form submission logic here
@@ -78,7 +78,11 @@ function CustomForm({ post }: { post?: Post }) {
           )}
         </div>
         <CustomFormField control={form.control} label="Location" />
-        <CustomFormField control={form.control} label="Tags" />
+        {/* <CustomFormField control={form.control} label="Tags" /> */}
+        <CustomTagInput
+          value={form.watch("tags")}
+          fieldChange={(tags) => form.setValue("tags", tags, { shouldValidate: true })}
+        />
 
         <Button
           type="submit"

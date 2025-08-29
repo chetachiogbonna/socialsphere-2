@@ -7,7 +7,7 @@ import { Input } from './ui/input'
 import UploadFile from './UploadFile';
 
 type CustomFormFieldProps = {
-  control: Control<{ title: string; location: string; tags: string; }>,
+  control: Control<{ title: string; location: string; tags: string[]; }>,
   label: "Title" | "Image" | "Location" | "Tags"
 }
 
