@@ -5,13 +5,18 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/f
 import { Textarea } from './ui/textarea'
 import { Input } from './ui/input'
 import UploadFile from './UploadFile';
+import CustomTagInput from './CustomTagInput';
+import { Post } from '@/types';
 
 type CustomFormFieldProps = {
   control: Control<{ title: string; location: string; tags: string[]; }>,
-  label: "Title" | "Image" | "Location" | "Tags"
+  label: "Title" | "Image" | "Location" | "Tags",
+  watch?: (field: "tags") => string[] | null,
+  setValue?: (field: "tags", value: string[], options: { shouldValidate: boolean }) => void | null
+  post?: Post
 }
 
-function CustomFormField({ control, label }: CustomFormFieldProps) {
+function CustomFormField({ control, label, watch, setValue, post }: CustomFormFieldProps) {
   switch (label) {
     case "Title":
       return (
@@ -58,14 +63,13 @@ function CustomFormField({ control, label }: CustomFormFieldProps) {
         <FormField
           control={control}
           name="tags"
-          render={({ field }) => (
+          render={() => (
             <FormItem>
               <FormLabel>{label}</FormLabel>
               <FormControl>
-                <Input
-                  className="bg-[#1A1A1A] border-light focus-visible:ring-0 focus-visible:outline-none text-white"
-                  placeholder="Location"
-                  {...field}
+                <CustomTagInput
+                  value={watch ? watch("tags") : []}
+                  fieldChange={(tags) => setValue && setValue("tags", tags, { shouldValidate: true })}
                 />
               </FormControl>
               <FormMessage />
@@ -73,24 +77,8 @@ function CustomFormField({ control, label }: CustomFormFieldProps) {
           )}
         />
       );
-    // case "Tags":
-    //   return (
-    //     <FormField
-    //       control={control}
-    //       name="tags"
-    //       render={({ field }) => (
-    //         <FormItem>
-    //           <FormLabel>{label}</FormLabel>
-    //           <FormControl>
-    //             <CustomTagInput field={field} />
-    //           </FormControl>
-    //           <FormMessage />
-    //         </FormItem>
-    //       )}
-    //     />
-    //   );
     case "Image":
-      return <UploadFile />
+      return <UploadFile post={post} />
   }
 }
 

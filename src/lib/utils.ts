@@ -52,3 +52,7 @@ export const convertToReadableDateString = (timeString: number) => {
 
   return timeAgo(date);
 }
+
+export const includesId = (arr: string[], id: string) => {
+  return arr.includes(id);
+}

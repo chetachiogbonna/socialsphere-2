@@ -5,9 +5,9 @@ export const leftSideNavLinks = [
     label: "Home"
   },
   {
-    route: "/messages",
-    image: "/assets/icons/message.png",
-    label: "Messages"
+    route: "/search",
+    image: "/assets/icons/search.svg",
+    label: "Search"
   },
   {
     route: "/bookmarks",
@@ -33,9 +33,9 @@ export const bottomNavLinks = [
     label: "Home"
   },
   {
-    route: "/messages",
-    image: "/assets/icons/message.png",
-    label: "Messages"
+    route: "/search",
+    image: "/assets/icons/search.svg",
+    label: "Search"
   },
   {
     route: "/create-post",

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Form } from './ui/form'
 import CustomFormField from './CustomFormField'
 import { Button } from './ui/button'
@@ -13,13 +13,25 @@ import { useMutation } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import { uploadImage } from '@/lib/utils';
 import { Id } from '../../convex/_generated/dataModel';
-import CustomTagInput from './CustomTagInput';
+import { Post } from '@/types';
+import useCurrentUserStore from '@/stores/useCurrentUserStore';
+import { useRouter } from 'next/navigation';
 
-function CustomForm({ post }: { post?: Post }) {
-  const { imageUrl, imageFile } = useImageStore();
+function CustomForm({ post, type }: { post?: Post, type: "Update" | "Create" }) {
+  const router = useRouter();
+  const { currentUser } = useCurrentUserStore();
+  const { imageUrl, imageFile, setImageUrl } = useImageStore();
   const [showImageError, setShowImageError] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (type === "Update" && post?.imageUrl) {
+      setImageUrl(post.imageUrl);
+    } else if (type === "Create") {
+      setImageUrl("");
+    }
+  }, [post, setImageUrl, type]);
 
   const form = useForm<z.infer<typeof postSchema>>({
     resolver: zodResolver(postSchema),
@@ -32,7 +44,9 @@ function CustomForm({ post }: { post?: Post }) {
 
   const generateUploadUrl = useMutation(api.storage.generateUploadUrl)
   const getImageUrl = useMutation(api.storage.getImageUrl)
+  const deleteImage = useMutation(api.storage.deleteById)
   const createPost = useMutation(api.post.createPost)
+  const updatePost = useMutation(api.post.updatePost)
 
   const onSubmit = async (values: z.infer<typeof postSchema>) => {
     setShowImageError(false);
@@ -44,17 +58,49 @@ function CustomForm({ post }: { post?: Post }) {
     setIsSubmitting(true)
 
     try {
-      const url = await generateUploadUrl();
-      const imageId = await uploadImage(url, imageFile!);
-      const realImageUrl = await getImageUrl({ storageId: imageId as Id<"_storage"> }) as string;
-      await createPost({
-        ownerId: "j57e0rn3d2r1gnr70dmb8eqt597pk1zm" as Id<"users">,
-        imageUrl: realImageUrl,
-        ...values,
-        imageId,
-      });
-      // Handle form submission logic here
-      console.log("Form submitted with values:", values);
+      if (type === "Update") {
+        // Update post logic here
+        if (!post) return;
+        // If imageUrl has changed, upload the new image
+        if (imageFile) {
+          await deleteImage({ imageId: post.imageId as Id<"_storage"> });
+          const url = await generateUploadUrl();
+          const imageId = await uploadImage(url, imageFile!) as Id<"_storage">;
+          const realImageUrl = await getImageUrl({ storageId: imageId as Id<"_storage"> }) as string;
+          updatePost({
+            postId: post._id,
+            title: values.title,
+            location: values.location,
+            tags: values.tags,
+            imageUrl: realImageUrl,
+            imageId,
+          });
+        } else {
+          updatePost({
+            postId: post._id,
+            title: values.title,
+            location: values.location,
+            tags: values.tags,
+            imageUrl: post.imageUrl,
+            imageId: post.imageId as Id<"_storage">,
+          });
+        }
+
+        router.push(`/post-details/${post?._id}`);
+      } else {
+        // Create post logic here
+        const url = await generateUploadUrl();
+        const imageId = await uploadImage(url, imageFile!);
+        const realImageUrl = await getImageUrl({ storageId: imageId as Id<"_storage"> }) as string;
+        await createPost({
+          ownerId: currentUser?._id as Id<"users">,
+          imageUrl: realImageUrl,
+          ...values,
+          imageId,
+        });
+
+        router.push("/");
+      }
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {
@@ -70,7 +116,7 @@ function CustomForm({ post }: { post?: Post }) {
       >
         <CustomFormField control={form.control} label="Title" />
         <div>
-          <CustomFormField control={form.control} label="Image" />
+          <CustomFormField control={form.control} label="Image" post={post} />
           {showImageError && (
             <p className="text-red-500 text-sm">
               Please upload an image before submitting.
@@ -78,19 +124,27 @@ function CustomForm({ post }: { post?: Post }) {
           )}
         </div>
         <CustomFormField control={form.control} label="Location" />
-        {/* <CustomFormField control={form.control} label="Tags" /> */}
-        <CustomTagInput
-          value={form.watch("tags")}
-          fieldChange={(tags) => form.setValue("tags", tags, { shouldValidate: true })}
-        />
+        <CustomFormField control={form.control} label="Tags" watch={form.watch} setValue={form.setValue} />
 
-        <Button
-          type="submit"
-          className="w-full"
-          disabled={isSubmitting}
-        >
-          Submit
-        </Button>
+        <div className="flex justify-end">
+          <Button
+            type="submit"
+            className="w-2/4 bg-blue cursor-pointer hover:bg-blue"
+            disabled={isSubmitting}
+          >
+            {isSubmitting
+              ? (
+                <>
+                  <svg
+                    className="animate-spin h-5 w-5 mr-3 border-2 border-white border-t-transparent rounded-full"
+                    viewBox="0 0 24 24"
+                  ></svg>
+                  {type.slice(0, 5)}ing...
+                </>
+              ) : `${type} Post`
+            }
+          </Button>
+        </div>
       </form>
     </Form>
   )

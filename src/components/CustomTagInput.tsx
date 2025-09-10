@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 
 type CustomTagInputProps = {
   fieldChange: (tags: string[]) => void
-  value: string[]
+  value: string[] | null
 }
 
 function CustomTagInput({ fieldChange, value }: CustomTagInputProps) {
@@ -30,13 +30,13 @@ function CustomTagInput({ fieldChange, value }: CustomTagInputProps) {
   }
 
   return (
-    <div className="flex items-center gap-2 bg-[#1A1A1A] border-light text-white rounded-md p-2">
+    <div className="flex items-center gap-2 bg-[#1A1A1A] border border-light text-white rounded-md p-1 ">
       <div className="flex flex-wrap gap-2">
         {tags.map((tag) => (
           <span
             key={tag}
             className={cn(
-              "flex items-center gap-1 rounded-full bg-dark-5 px-3 py-1 text-sm"
+              "flex items-center gap-1 rounded-full bg-dark px-3 py-1 text-sm"
             )}
           >
             {tag}
@@ -57,7 +57,9 @@ function CustomTagInput({ fieldChange, value }: CustomTagInputProps) {
             addTag()
           }
         }}
-        placeholder="Type something and press Enter"
+        aria-disabled={tags.length >= 4}
+        disabled={tags.length >= 4}
+        placeholder={tags[0] ? "" : "Type something and press Enter"}
         className="flex-1 bg-transparent border-none focus-visible:ring-0 focus-visible:outline-none"
       />
     </div>

@@ -10,6 +10,7 @@ export default defineSchema({
     email: v.string(),
     profile_pic: v.string(),
   }).index("byClerkId", ["clerk_userId"]),
+
   posts: defineTable({
     ownerId: v.id("users"),
     title: v.string(),
@@ -24,5 +25,5 @@ export default defineSchema({
       createdAt: v.number(),
     })),
     saves: v.array(v.id("users")),
-  }),
+  }).searchIndex("byTitle", { searchField: "title" }),
 });

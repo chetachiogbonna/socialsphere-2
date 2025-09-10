@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 interface ImageStore {
   imageFile: File | null;
-  setImageFile: (imageFile: File) => void;
+  setImageFile: (imageFile: File | null) => void;
   imageUrl: string | null;
   setImageUrl: (imageUrl: string) => void;
 }

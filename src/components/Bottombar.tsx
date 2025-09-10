@@ -10,10 +10,10 @@ function Bottombar() {
   const pathname = usePathname();
 
   return (
-    <section className="md:hidden fixed bottom-0 right-0 left-0 z-20">
+    <section className="md:hidden fixed bottom-0 right-0 left-0 z-10000">
       <ul className="bg-dark-2 h-10 flex justify-between items-center px-5">
         {bottomNavLinks.map((link) => {
-          const isActive = link.route === pathname || pathname.startsWith(link.route);
+          const isActive = link.route === pathname;
 
           return (
             <li key={link.label}>

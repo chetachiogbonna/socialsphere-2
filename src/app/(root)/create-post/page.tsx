@@ -16,7 +16,7 @@ function CreatePost() {
         <h2 className="text-2xl font-medium">Create Post</h2>
       </div>
 
-      <CustomForm />
+      <CustomForm type="Create" />
     </section>
   )
 }
