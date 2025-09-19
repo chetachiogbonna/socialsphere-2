@@ -1,6 +1,6 @@
 "use client";
 
-import useImageStore from '@/stores/useImageStore';
+import usePostStore from '@/stores/usePostStore';
 import { Post } from '@/types';
 import { ImageIcon, UploadCloud } from 'lucide-react';
 import Image from 'next/image';
@@ -11,7 +11,7 @@ import { useDropzone } from 'react-dropzone';
 function UploadFile({ post }: { post?: Post }) {
   const pathname = usePathname();
 
-  const { imageUrl, setImageUrl, setImageFile, imageFile } = useImageStore();
+  const { imageUrl, setImageUrl, setImageFile, imageFile } = usePostStore();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setImageUrl(URL.createObjectURL(acceptedFiles[0]));
