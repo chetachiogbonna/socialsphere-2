@@ -1,6 +1,5 @@
 import CustomForm from '@/components/CustomForm'
 import Image from 'next/image'
-import React from 'react'
 
 function CreatePost() {
   return (

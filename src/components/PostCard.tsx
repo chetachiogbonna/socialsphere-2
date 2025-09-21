@@ -9,13 +9,18 @@ import { Edit, Trash } from "lucide-react"
 import useCurrentUserStore from "@/stores/useCurrentUserStore"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { forwardRef } from "react"
+import RobotIcon from "./RobotIcon"
 
-function PostCard({ post }: { post: Post }) {
+const PostCard = forwardRef<HTMLDivElement, {
+  post: Post, currentViewingPost: Post
+}
+>(({ post, currentViewingPost }, ref) => {
   const router = useRouter();
   const { currentUser } = useCurrentUserStore();
 
   return (
-    <Card className="bg-[#0a0a0a] text-white border border-neutral-800 gap-3">
+    <Card ref={ref} data-post={JSON.stringify(post)} className="bg-[#0a0a0a] text-white border border-neutral-800 gap-3 post-card relative">
       <CardHeader className="flex justify-between items-center">
         <div className="flex flex-row items-center gap-3">
           <Image
@@ -38,17 +43,26 @@ function PostCard({ post }: { post: Post }) {
           </div>
         </div>
 
-        {currentUser?._id === post.ownerId &&
-          (
-            <div className="flex flex-row gap-2">
-              <Edit
-                onClick={() => router.push(`/edit-post/${post._id}`)}
-                size={20}
-                color="#A23AF9" className="cursor-pointer"
-              />
-              <Trash size={20} color="red" className="cursor-pointer" />
-            </div>
-          )}
+        <div className="flex">
+          <div className="relative">
+            {currentViewingPost?._id === post?._id && (
+              <RobotIcon />
+            )}
+          </div>
+
+          {currentUser?._id === post.ownerId &&
+            (
+              <div className="flex flex-row gap-2">
+                <Edit
+                  onClick={() => router.push(`/edit-post/${post._id}`)}
+                  size={20}
+                  color="#A23AF9"
+                  className="cursor-pointer"
+                />
+                <Trash size={20} color="red" className="cursor-pointer" />
+              </div>
+            )}
+        </div>
       </CardHeader>
 
       <CardTitle className="flex flex-col gap-2 pt-0">
@@ -88,6 +102,6 @@ function PostCard({ post }: { post: Post }) {
       <PostStats post={post} showComment={true} />
     </Card>
   )
-}
+})
 
 export default PostCard;

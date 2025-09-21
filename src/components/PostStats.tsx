@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { CardFooter } from './ui/card'
 import { Bookmark, Heart, MessageCircle } from 'lucide-react'
 import CommentSection from './CommentSection'
@@ -16,6 +16,11 @@ function PostStats({ post, showComment }: { post: Post, showComment: boolean }) 
 
   const [likes, setLikes] = useState(post.likes);
   const [saves, setSaves] = useState(post.saves)
+
+  useEffect(() => {
+    setLikes(post.likes);
+    setSaves(post.saves);
+  }, [post.likes, post.saves])
 
   const toggleLikeMutation = useMutation(api.post.toggleLike);
   const toggleSaveMutation = useMutation(api.post.toggleSave);

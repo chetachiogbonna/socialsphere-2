@@ -65,7 +65,7 @@ export const getAllPosts = query({
       })
     );
 
-    return postsWithUser as Post[];
+    return postsWithUser.reverse() as Post[];
   }
 })
 
@@ -138,6 +138,22 @@ export const toggleSave = mutation({
     }
 
     await ctx.db.patch(args.postId, { saves: updatedSaves });
+  }
+})
+
+export const comment = mutation({
+  args: {
+    comment: v.object({
+      userId: v.id("users"),
+      text: v.string()
+    }),
+    postId: v.id("posts")
+  },
+  handler: async (ctx, args) => {
+    const post = await ctx.db.get(args.postId);
+    const existingComments = post?.comments ?? [];
+    const updatedComments = [...existingComments, args.comment];
+    await ctx.db.patch(args.postId, { comments: updatedComments });
   }
 })
 

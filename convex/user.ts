@@ -5,7 +5,7 @@ export const getForCurrentUser = query({
   args: {},
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (identity === null) {
+    if (!identity) {
       throw new Error("Not authenticated");
     }
     return await ctx.db
@@ -50,3 +50,21 @@ export const deleteUser = mutation({
     });
   },
 });
+
+export const getAllUsers = query({
+  args: {},
+  handler: async (ctx) => {
+    const allUsers = await ctx.db.query("users").collect()
+    return allUsers;
+  }
+})
+
+export const getUserById = query({
+  args: {
+    userId: v.id("users")
+  },
+  handler: async (ctx, { userId }) => {
+    const user = await ctx.db.get(userId)
+    return user;
+  }
+})

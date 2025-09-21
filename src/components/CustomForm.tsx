@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { postSchema } from '@/lib/formSchemas';
 import z from 'zod';
 import { useForm } from 'react-hook-form';
-import useImageStore from '@/stores/useImageStore';
+import usePostStore from '@/stores/usePostStore';
 import { useMutation } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import { uploadImage } from '@/lib/utils';
@@ -20,10 +20,11 @@ import { useRouter } from 'next/navigation';
 function CustomForm({ post, type }: { post?: Post, type: "Update" | "Create" }) {
   const router = useRouter();
   const { currentUser } = useCurrentUserStore();
-  const { imageUrl, imageFile, setImageUrl } = useImageStore();
   const [showImageError, setShowImageError] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { imageUrl, imageFile, setImageUrl, post: newPost } = usePostStore();
 
   useEffect(() => {
     if (type === "Update" && post?.imageUrl) {
@@ -33,14 +34,30 @@ function CustomForm({ post, type }: { post?: Post, type: "Update" | "Create" }) 
     }
   }, [post, setImageUrl, type]);
 
+  useEffect(() => {
+    if (newPost) {
+      form.setValue("tags", newPost.tags, { shouldValidate: true })
+      form.watch("tags")
+
+      form.reset({
+        title: newPost.title || post?.title || "",
+        location: newPost.location || post?.location || "",
+        tags: newPost.tags || post?.tags || [],
+      });
+    }
+  }, [newPost, post]);
+
+
   const form = useForm<z.infer<typeof postSchema>>({
     resolver: zodResolver(postSchema),
     defaultValues: {
-      title: post?.title || "",
-      location: post?.location || "",
-      tags: post?.tags || [],
+      title: newPost?.title || post?.title || "",
+      location: newPost?.location || post?.location || "",
+      tags: newPost?.tags || post?.tags || [],
     },
   });
+
+  console.log(newPost)
 
   const generateUploadUrl = useMutation(api.storage.generateUploadUrl)
   const getImageUrl = useMutation(api.storage.getImageUrl)
@@ -114,17 +131,17 @@ function CustomForm({ post, type }: { post?: Post, type: "Update" | "Create" }) 
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4"
       >
-        <CustomFormField control={form.control} label="Title" />
+        <CustomFormField form={form} label="Title" />
         <div>
-          <CustomFormField control={form.control} label="Image" post={post} />
+          <CustomFormField form={form} label="Image" post={post} />
           {showImageError && (
             <p className="text-red-500 text-sm">
               Please upload an image before submitting.
             </p>
           )}
         </div>
-        <CustomFormField control={form.control} label="Location" />
-        <CustomFormField control={form.control} label="Tags" watch={form.watch} setValue={form.setValue} />
+        <CustomFormField form={form} label="Location" />
+        <CustomFormField form={form} label="Tags" />
 
         <div className="flex justify-end">
           <Button

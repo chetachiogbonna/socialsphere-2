@@ -21,8 +21,7 @@ export default defineSchema({
     likes: v.array(v.id("users")),
     comments: v.array(v.object({
       userId: v.id("users"),
-      text: v.string(),
-      createdAt: v.number(),
+      text: v.string()
     })),
     saves: v.array(v.id("users")),
   }).searchIndex("byTitle", { searchField: "title" }),

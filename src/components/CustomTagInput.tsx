@@ -1,18 +1,29 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { ControllerRenderProps } from "react-hook-form"
+import { fi } from "zod/v4/locales"
 
 type CustomTagInputProps = {
+  field: ControllerRenderProps<{
+    title: string;
+    location: string;
+    tags: string[];
+  }, "tags">
   fieldChange: (tags: string[]) => void
   value: string[] | null
 }
 
-function CustomTagInput({ fieldChange, value }: CustomTagInputProps) {
+function CustomTagInput({ field, fieldChange, value }: CustomTagInputProps) {
   const [inputValue, setInputValue] = useState("")
   const [tags, setTags] = useState<string[]>(value || [])
+
+  useEffect(() => {
+    setTags(field.value)
+  }, [])
 
   const addTag = () => {
     if (inputValue.trim() && !tags.includes(inputValue.trim())) {
@@ -32,7 +43,7 @@ function CustomTagInput({ fieldChange, value }: CustomTagInputProps) {
   return (
     <div className="flex items-center gap-2 bg-[#1A1A1A] border border-light text-white rounded-md p-1 ">
       <div className="flex flex-wrap gap-2">
-        {tags.map((tag) => (
+        {(tags || value).map((tag) => (
           <span
             key={tag}
             className={cn(
@@ -49,6 +60,7 @@ function CustomTagInput({ fieldChange, value }: CustomTagInputProps) {
       </div>
 
       <Input
+        {...field}
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={(e) => {

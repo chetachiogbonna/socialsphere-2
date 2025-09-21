@@ -1,6 +1,6 @@
 "use client";
 
-import { Control } from 'react-hook-form'
+import { Control, UseFormReturn } from 'react-hook-form'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form'
 import { Textarea } from './ui/textarea'
 import { Input } from './ui/input'
@@ -9,19 +9,25 @@ import CustomTagInput from './CustomTagInput';
 import { Post } from '@/types';
 
 type CustomFormFieldProps = {
-  control: Control<{ title: string; location: string; tags: string[]; }>,
+  form: UseFormReturn<{
+    title: string;
+    location: string;
+    tags: string[];
+  }, any, {
+    title: string;
+    location: string;
+    tags: string[];
+  }>,
   label: "Title" | "Image" | "Location" | "Tags",
-  watch?: (field: "tags") => string[] | null,
-  setValue?: (field: "tags", value: string[], options: { shouldValidate: boolean }) => void | null
   post?: Post
 }
 
-function CustomFormField({ control, label, watch, setValue, post }: CustomFormFieldProps) {
+function CustomFormField({ form, label, post }: CustomFormFieldProps) {
   switch (label) {
     case "Title":
       return (
         <FormField
-          control={control}
+          control={form.control}
           name="title"
           render={({ field }) => (
             <FormItem>
@@ -41,7 +47,7 @@ function CustomFormField({ control, label, watch, setValue, post }: CustomFormFi
     case "Location":
       return (
         <FormField
-          control={control}
+          control={form.control}
           name="location"
           render={({ field }) => (
             <FormItem>
@@ -61,15 +67,16 @@ function CustomFormField({ control, label, watch, setValue, post }: CustomFormFi
     case "Tags":
       return (
         <FormField
-          control={control}
+          control={form.control}
           name="tags"
-          render={() => (
+          render={({ field }) => (
             <FormItem>
               <FormLabel>{label}</FormLabel>
               <FormControl>
                 <CustomTagInput
-                  value={watch ? watch("tags") : []}
-                  fieldChange={(tags) => setValue && setValue("tags", tags, { shouldValidate: true })}
+                  field={field}
+                  value={form.getValues("tags")}
+                  fieldChange={(tags) => form.setValue("tags", tags, { shouldValidate: true })}
                 />
               </FormControl>
               <FormMessage />
