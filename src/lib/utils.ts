@@ -56,3 +56,11 @@ export const convertToReadableDateString = (timeString: number) => {
 export const includesId = (arr: string[], id: string) => {
   return arr.includes(id);
 }
+
+export const speak = (text: string) => {
+  if (typeof window !== "undefined" && "speechSynthesis" in window) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    speechSynthesis.speak(utterance);
+  }
+}

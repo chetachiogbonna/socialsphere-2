@@ -6,7 +6,7 @@ import { Input } from "./ui/input";
 import Image from "next/image";
 import { Post } from "@/types";
 import useCurrentUserStore from "@/stores/useCurrentUserStore";
-import { useMutation, useQueries, useQuery } from "convex/react";
+import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { toast } from "sonner";
 import { usePathname } from "next/navigation";

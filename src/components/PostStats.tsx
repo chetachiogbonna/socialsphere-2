@@ -10,6 +10,7 @@ import useCurrentUserStore from '@/stores/useCurrentUserStore'
 import { useMutation } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import { Id } from '../../convex/_generated/dataModel';
+import { toast } from 'sonner';
 
 function PostStats({ post, showComment }: { post: Post, showComment: boolean }) {
   const { currentUser } = useCurrentUserStore();
@@ -53,15 +54,18 @@ function PostStats({ post, showComment }: { post: Post, showComment: boolean }) 
     toggleSaveMutation({ postId: post._id, userId });
   }
 
+  if (!currentUser) return toast.error("No user found");
+
+
   return (
     <CardFooter className="flex flex-col gap-3 px-4">
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center gap-4 [&>div]:flex [&>div]:items-center [&>div]:justify-center [&>div]:gap-1">
           <div
             className="flex items-center gap-1"
-            onClick={() => likePost(currentUser?._id!)}
+            onClick={() => likePost(currentUser._id)}
           >
-            {includesId(likes, currentUser?._id!)
+            {includesId(likes, currentUser._id)
               ? <Heart color="#A23AF9" className="w-6 h-6 cursor-pointer fill-[#A23AF9]" />
               : <Heart color="#A23AF9" className="w-6 h-6 cursor-pointer" />
             }
@@ -78,9 +82,9 @@ function PostStats({ post, showComment }: { post: Post, showComment: boolean }) 
 
         <div
           className="flex items-center gap-1"
-          onClick={() => savePost(currentUser?._id!)}
+          onClick={() => savePost(currentUser._id)}
         >
-          {includesId(saves, currentUser?._id!)
+          {includesId(saves, currentUser._id)
             ? <Bookmark color="#A23AF9" className="w-6 h-6 cursor-pointer fill-[#A23AF9]" />
             : <Bookmark color="#A23AF9" className="w-6 h-6 cursor-pointer" />
           }

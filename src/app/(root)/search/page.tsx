@@ -13,7 +13,6 @@ function Search() {
   const posts = useQuery(api.post.getAllPosts);
 
   const { deboncedValue } = useDebounce(searchTerm, 1000)
-  console.log("debounced", deboncedValue)
 
   const searchedPosts = useQuery(api.post.search, { searchTerm: deboncedValue });
 

@@ -8,7 +8,9 @@ import { api } from "../../../../convex/_generated/api";
 function Bookmarks() {
   const { currentUser } = useCurrentUserStore();
 
-  const posts = useQuery(api.post.getUserSavedPosts, { userId: currentUser?._id! });
+  const userId = currentUser ? currentUser._id : undefined;
+
+  const posts = useQuery(api.post.getUserSavedPosts, { userId });
 
   return (
     <>

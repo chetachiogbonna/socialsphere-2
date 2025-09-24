@@ -34,20 +34,6 @@ function CustomForm({ post, type }: { post?: Post, type: "Update" | "Create" }) 
     }
   }, [post, setImageUrl, type]);
 
-  useEffect(() => {
-    if (newPost) {
-      form.setValue("tags", newPost.tags, { shouldValidate: true })
-      form.watch("tags")
-
-      form.reset({
-        title: newPost.title || post?.title || "",
-        location: newPost.location || post?.location || "",
-        tags: newPost.tags || post?.tags || [],
-      });
-    }
-  }, [newPost, post]);
-
-
   const form = useForm<z.infer<typeof postSchema>>({
     resolver: zodResolver(postSchema),
     defaultValues: {
@@ -57,7 +43,19 @@ function CustomForm({ post, type }: { post?: Post, type: "Update" | "Create" }) 
     },
   });
 
-  console.log(newPost)
+  useEffect(() => {
+    if (newPost) {
+      if (newPost.title) {
+        form.setValue("title", newPost.title);
+      }
+      if (newPost.location) {
+        form.setValue("location", newPost.location);
+      }
+      if (newPost.tags && newPost.tags.length) {
+        form.setValue("tags", newPost.tags);
+      }
+    }
+  }, [newPost, form]);
 
   const generateUploadUrl = useMutation(api.storage.generateUploadUrl)
   const getImageUrl = useMutation(api.storage.getImageUrl)
@@ -131,17 +129,24 @@ function CustomForm({ post, type }: { post?: Post, type: "Update" | "Create" }) 
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4"
       >
-        <CustomFormField form={form} label="Title" />
+        <div id="scroll-title" className="scroll-m-10" />
+        <CustomFormField control={form.control} label={{ name: "Title" }} />
+
         <div>
-          <CustomFormField form={form} label="Image" post={post} />
+          <div id="scroll-image" />
+          <CustomFormField control={form.control} label={{ name: "Image" }} post={post} />
           {showImageError && (
             <p className="text-red-500 text-sm">
               Please upload an image before submitting.
             </p>
           )}
         </div>
-        <CustomFormField form={form} label="Location" />
-        <CustomFormField form={form} label="Tags" />
+
+        <div id="scroll-location" />
+        <CustomFormField control={form.control} label={{ name: "Location" }} />
+
+        <div id="scroll-tags" />
+        <CustomFormField control={form.control} label={{ name: "Tags", watch: form.watch, setValue: form.setValue }} />
 
         <div className="flex justify-end">
           <Button

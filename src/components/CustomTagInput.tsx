@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input"
 import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { ControllerRenderProps } from "react-hook-form"
-import { fi } from "zod/v4/locales"
+import usePostStore from "@/stores/usePostStore"
 
 type CustomTagInputProps = {
   field: ControllerRenderProps<{
@@ -18,12 +18,13 @@ type CustomTagInputProps = {
 }
 
 function CustomTagInput({ field, fieldChange, value }: CustomTagInputProps) {
+  const { post: newPost } = usePostStore()
   const [inputValue, setInputValue] = useState("")
-  const [tags, setTags] = useState<string[]>(value || [])
+  const [tags, setTags] = useState<string[]>(newPost?.tags ?? value ?? [])
 
   useEffect(() => {
-    setTags(field.value)
-  }, [])
+    setTags(newPost?.tags ?? field.value ?? [])
+  }, [newPost, field.value])
 
   const addTag = () => {
     if (inputValue.trim() && !tags.includes(inputValue.trim())) {
@@ -66,6 +67,7 @@ function CustomTagInput({ field, fieldChange, value }: CustomTagInputProps) {
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             e.preventDefault()
+            console.log(value)
             addTag()
           }
         }}

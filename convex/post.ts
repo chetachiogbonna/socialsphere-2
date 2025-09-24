@@ -159,10 +159,10 @@ export const comment = mutation({
 
 export const getUserSavedPosts = query({
   args: {
-    userId: v.id("users"),
+    userId: v.optional(v.id("users")),
   },
   handler: async (ctx, { userId }) => {
-    if (!userId) throw new Error("Not authenticated");
+    if (!userId) return;
 
     const posts = await ctx.db.query("posts").collect();
 

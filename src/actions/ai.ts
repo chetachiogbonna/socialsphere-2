@@ -1,10 +1,10 @@
 "use server";
 
-import { InferenceClient } from "@huggingface/inference";
+// import { InferenceClient } from "@huggingface/inference";
 import { GoogleGenAI } from "@google/genai";
 
-const HF_TOKEN = process.env.HF_TOKEN;
-const inference = new InferenceClient(HF_TOKEN);
+// const HF_TOKEN = process.env.HF_TOKEN;
+// const inference = new InferenceClient(HF_TOKEN);
 
 const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY });
 

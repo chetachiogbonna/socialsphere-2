@@ -6,23 +6,21 @@ import { Bot } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-console.log("ok")
-
 export default function RobotIcon() {
   const pathname = usePathname()
-  const { runAI, startListening, stopListening, transcript, listening, loading, aiResponse } = useAIAction();
+  const { runAI, startListening, stopListening, transcript, listening, loading, aiResponse, resetTranscript } = useAIAction();
 
-  const handleClick = async () => {
+  const handleClick = () => {
     if (transcript || listening) {
       stopListening();
-      await runAI(transcript);
+      runAI(transcript);
+      resetTranscript()
     } else {
       startListening();
     }
   }
 
-  // Glow styles by state
-  let glow = "shadow-[0_0_18px_rgba(160,160,255,0.7)] text-indigo-400"; // idle (eye-catching)
+  let glow = "shadow-[0_0_18px_rgba(160,160,255,0.7)] text-indigo-400"; // idle
   if (listening) glow = "shadow-[0_0_20px_rgba(59,130,246,0.9)] text-blue-500"; // listening
   if (loading) glow = "shadow-[0_0_20px_rgba(234,179,8,0.9)] text-yellow-500"; // thinking
   if (!loading && aiResponse) glow = "shadow-[0_0_20px_rgba(34,197,94,0.9)] text-green-500"; // responded
@@ -30,14 +28,12 @@ export default function RobotIcon() {
   return (
     <div className={cn("absolute z-[10000] flex flex-col items-center gap-2", pathname === "/" ? "-left-12 -top-2" : "bottom-6 right-6")}>
       <motion.button
-        id="chetachi"
         onClick={handleClick}
         whileTap={{ scale: 0.9 }}
         animate={listening || aiResponse ? { y: [0, -3, 0] } : { y: 0 }}
         transition={{ repeat: listening || aiResponse ? Infinity : 0, duration: 1 }}
         className={`${pathname === "/" ? "p-1" : "p-5"} rounded-full bg-[#1A1A1A] cursor-pointer ${glow} transition-all relative`}
         disabled={loading || !!aiResponse}
-      // hidden={loading || !!aiResponse}
       >
         <Bot className={cn("", pathname === "/" ? "w-6 h-6" : "w-8 h-8")} />
 

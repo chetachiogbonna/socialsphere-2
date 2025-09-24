@@ -5,13 +5,14 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link'
 import { usePathname } from 'next/navigation';
+import Settings from './Settings';
 
 function LeftSidebar() {
   const pathname = usePathname();
 
   return (
     <aside className="hidden md:block md:w-[25%] xl:w-[20%] bg-dark-3 h-[100dvh] mt-[60px] pt-6">
-      <ul className="flex flex-col px-4 gap-5">
+      <ul className="flex flex-col px-4 gap-5 h-full relative">
         {leftSideNavLinks.map((link) => {
           const isActive = link.route === pathname;
 
@@ -34,8 +35,12 @@ function LeftSidebar() {
             </li>
           )
         })}
+
+        <div className="absolute bottom-20 left-0 right-0">
+          <Settings />
+        </div>
       </ul>
-    </aside >
+    </aside>
   )
 }
 

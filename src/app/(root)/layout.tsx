@@ -20,7 +20,7 @@ export default function RootLayout({
     if (currentUser) {
       setCurrentUser(currentUser!);
     }
-  }, [currentUser]);
+  }, [currentUser, setCurrentUser]);
 
   return (
     <main className="max-w-screen-2xl mx-auto h-screen overflow-hidden flex">

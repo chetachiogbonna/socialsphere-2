@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Edit, Trash } from "lucide-react"
 import Image from "next/image"
-import { useParams, useRouter } from "next/navigation"
+import { useParams } from "next/navigation"
 import useCurrentUserStore from "@/stores/useCurrentUserStore"
 import { convertToReadableDateString } from "@/lib/utils"
 import { api } from '../../../../../convex/_generated/api'

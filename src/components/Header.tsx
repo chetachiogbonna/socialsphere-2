@@ -4,13 +4,14 @@ import Logo from "./Logo";
 import { UserButton } from "@clerk/nextjs";
 import { useAIAction } from "@/hooks/useAIAction";
 import { motion, AnimatePresence } from "framer-motion";
-import { Textarea } from "./ui/textarea";
 import RobotIcon from "./RobotIcon";
 import { usePathname } from "next/navigation";
 
 function Header() {
   const pathname = usePathname()
-  const { runAI, startListening, stopListening, transcript, listening } = useAIAction();
+  const { transcript, listening } = useAIAction();
+
+  const mode = typeof window !== "undefined" && JSON.parse(window?.localStorage?.getItem("lazy-mode") ?? "true")
 
   return (
     <>
@@ -19,26 +20,6 @@ function Header() {
           <Logo />
 
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => {
-                startListening()
-              }}
-              className="px-4 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition"
-            >
-              🎤 Start
-            </button>
-
-            <button
-              onClick={async () => {
-                stopListening()
-                const res = await runAI(transcript)
-                console.log(res)
-              }}
-              className="px-4 py-2 rounded-xl bg-green-600 text-white hover:bg-green-700 transition"
-            >
-              🚀 Send
-            </button>
-
             <UserButton />
           </div>
         </div>
@@ -46,7 +27,7 @@ function Header() {
 
       {/* Floating transcript textarea */}
       <AnimatePresence>
-        {transcript && (
+        {mode ? transcript : listening && (
           <div className="fixed inset-0 z-1000 bg-[rgba(0,0,0,0.5)]">
             <motion.div
               initial={{ y: "100%", opacity: 0 }}
@@ -56,16 +37,7 @@ function Header() {
               className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md"
             >
               <div
-                className="
-      w-full rounded-2xl
-      border border-transparent
-      bg-white/10 backdrop-blur-md
-      shadow-[0_8px_30px_rgba(0,0,0,0.3)]
-      px-5 py-3 text-base font-medium text-white
-      focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500
-      transition-all duration-300 ease-in-out
-      min-h-[70px] flex items-center
-    "
+                className=" w-full rounded-2xl border border-transparent  bg-white/10 backdrop-blur-md shadow-[0_8px_30px_rgba(0,0,0,0.3)] px-5 py-3 text-base font-medium text-white focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all duration-300 ease-in-out min-h-[70px] flex items-center"
               >
                 {transcript ? (
                   <p className="whitespace-pre-wrap">{transcript}</p>
