@@ -27,7 +27,7 @@ function Header() {
 
       {/* Floating transcript textarea */}
       <AnimatePresence>
-        {mode ? transcript : listening && (
+        {(mode ? transcript : listening) && (
           <div className="fixed inset-0 z-1000 bg-[rgba(0,0,0,0.5)]">
             <motion.div
               initial={{ y: "100%", opacity: 0 }}

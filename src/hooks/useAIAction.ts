@@ -241,13 +241,13 @@ export function useAIAction() {
   }, [aiResponse]);
 
   useEffect(() => {
-    let intervalId: NodeJS.Timeout;
+    // let intervalId: NodeJS.Timeout;
 
     if (mode) {
       if (!transcript && !listening && !loading && !aiResponse) {
-        intervalId = setInterval(() => {
-          startListening();
-        }, 1000);
+        // intervalId = setInterval(() => {
+        startListening();
+        // }, 1000);
       }
 
       if (!listening && !loading && !aiResponse && transcript && transcript.trim()) {
@@ -255,9 +255,9 @@ export function useAIAction() {
       }
     }
 
-    return () => {
-      if (intervalId) clearInterval(intervalId);
-    };
+    // return () => {
+    //   if (intervalId) clearInterval(intervalId);
+    // }
   }, [transcript, listening, loading, aiResponse, runAI, mode]);
 
   return {
